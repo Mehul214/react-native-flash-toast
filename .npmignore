@@ -1,0 +1,8 @@
+.github/
+example/
+test/
+src/
+tsconfig.json
+tsup.config.ts
+.gitignore
+*.log

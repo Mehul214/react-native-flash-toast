@@ -1,0 +1,72 @@
+{
+  "name": "react-native-flash-toast",
+  "version": "1.0.0",
+  "description": "Next-generation, highly customizable flash message and toast banner for React Native & Expo. 100% Fabric / New Architecture ready with swipe-to-dismiss gestures.",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "react-native": "src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "node test/smoke.test.js",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run typecheck && npm test && npm run build"
+  },
+  "keywords": [
+    "react-native",
+    "react-native-flash-message",
+    "flash-message",
+    "toast",
+    "banner",
+    "notification",
+    "alert",
+    "snackbar",
+    "fabric",
+    "new-architecture",
+    "expo",
+    "swipe-to-dismiss",
+    "ios",
+    "android"
+  ],
+  "author": "Your Name <you@example.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/your-username/react-native-flash-toast#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/react-native-flash-toast.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-username/react-native-flash-toast/issues"
+  },
+  "peerDependencies": {
+    "react": ">=17.0.0",
+    "react-native": ">=0.68.0"
+  },
+  "peerDependenciesMeta": {
+    "react-native-safe-area-context": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "@types/react-native": "^0.73.0",
+    "react": "^19.0.0",
+    "react-native": "^0.78.0",
+    "tsup": "^8.3.0",
+    "typescript": "^5.7.3"
+  }
+}
