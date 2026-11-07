@@ -7,7 +7,7 @@
 [![Fabric Ready](https://img.shields.io/badge/New%20Architecture-Fabric%20%26%20TurboModules-brightgreen.svg?style=flat-square)](https://reactnative.dev)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](CONTRIBUTING.md)
 [![Sponsor](https://img.shields.io/badge/Sponsor-GitHub%20Sponsors-pink.svg?style=flat-square)](https://github.com/sponsors/Mehul214)
-[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-FFDD00?style=flat-square&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/Mehul214)
+[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-FFDD00?style=flat-square&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/mehulreshac)
 [![Donate UPI](https://img.shields.io/badge/Donate-UPI-orange.svg?style=flat-square)](#-support-via-upi)
 
 > Next-generation flash message, alert bar, and toast notification library for **React Native** and **Expo**. Built for the **New Architecture (Fabric)**, modern safe areas, dynamic islands, and interactive swipe-to-dismiss gestures.
@@ -217,10 +217,10 @@ Building and maintaining open-source libraries takes dedicated effort. If `react
 
 - ⭐️ **Star the repository on GitHub** (helps more developers discover it)
 - 💖 **[Sponsor on GitHub Sponsors](https://github.com/sponsors/Mehul214)**
-- ☕️ **[Buy Me a Coffee](https://buymeacoffee.com/Mehul214)**
+- ☕️ **[Buy Me a Coffee](https://buymeacoffee.com/mehulreshac)**
 
 <p align="left">
-  <a href="https://buymeacoffee.com/Mehul214" target="_blank">
+  <a href="https://buymeacoffee.com/mehulreshac" target="_blank">
     <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" height="42" />
   </a>
 </p>

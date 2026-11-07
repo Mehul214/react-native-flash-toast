@@ -35,5 +35,5 @@ Thank you for your interest in contributing! Community contributions are welcome
 
 ## Sponsoring & Supporting
 
-If you or your team use `react-native-flash-toast` in production, consider sponsoring the project on [GitHub Sponsors](https://github.com/sponsors/Mehul214), buying a coffee on [Buy Me a Coffee](https://buymeacoffee.com/Mehul214), or leaving a ⭐️ on GitHub!
+If you or your team use `react-native-flash-toast` in production, consider sponsoring the project on [GitHub Sponsors](https://github.com/sponsors/Mehul214), buying a coffee on [Buy Me a Coffee](https://buymeacoffee.com/mehulreshac), or leaving a ⭐️ on GitHub!
 
