@@ -6,7 +6,7 @@ Thank you for your interest in contributing! Community contributions are welcome
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/react-native-flash-toast.git
+   git clone https://github.com/Mehul214/react-native-flash-toast.git
    cd react-native-flash-toast
    ```
 
@@ -35,4 +35,5 @@ Thank you for your interest in contributing! Community contributions are welcome
 
 ## Sponsoring & Supporting
 
-If you or your team use `react-native-flash-toast` in production, consider sponsoring the project on [GitHub Sponsors](https://github.com/sponsors/your-username) or leaving a ⭐️ on GitHub!
+If you or your team use `react-native-flash-toast` in production, consider sponsoring the project on [GitHub Sponsors](https://github.com/sponsors/Mehul214) or leaving a ⭐️ on GitHub!
+

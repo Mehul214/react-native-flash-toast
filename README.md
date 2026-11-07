@@ -1,12 +1,12 @@
-# react-native-flash-toast ⚡️
+# @mehul214/react-native-flash-toast ⚡️
 
-[![npm version](https://img.shields.io/npm/v/react-native-flash-toast.svg?style=flat-square)](https://www.npmjs.com/package/react-native-flash-toast)
-[![npm downloads](https://img.shields.io/npm/dm/react-native-flash-toast.svg?style=flat-square)](https://www.npmjs.com/package/react-native-flash-toast)
+[![npm version](https://img.shields.io/npm/v/@mehul214/react-native-flash-toast.svg?style=flat-square)](https://www.npmjs.com/package/@mehul214/react-native-flash-toast)
+[![npm downloads](https://img.shields.io/npm/dm/@mehul214/react-native-flash-toast.svg?style=flat-square)](https://www.npmjs.com/package/@mehul214/react-native-flash-toast)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg?style=flat-square)](https://www.typescriptlang.org/)
 [![Fabric Ready](https://img.shields.io/badge/New%20Architecture-Fabric%20%26%20TurboModules-brightgreen.svg?style=flat-square)](https://reactnative.dev)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](CONTRIBUTING.md)
-[![Sponsor](https://img.shields.io/badge/Sponsor-GitHub%20Sponsors-pink.svg?style=flat-square)](https://github.com/sponsors/your-username)
+[![Sponsor](https://img.shields.io/badge/Sponsor-GitHub%20Sponsors-pink.svg?style=flat-square)](https://github.com/sponsors/Mehul214)
 
 > Next-generation flash message, alert bar, and toast notification library for **React Native** and **Expo**. Built for the **New Architecture (Fabric)**, modern safe areas, dynamic islands, and interactive swipe-to-dismiss gestures.
 
@@ -32,11 +32,11 @@ A modern, drop-in replacement for the outdated `react-native-flash-message` pack
 ## 📦 Installation
 
 ```bash
-npm install react-native-flash-toast
+npm install @mehul214/react-native-flash-toast
 # or
-yarn add react-native-flash-toast
+yarn add @mehul214/react-native-flash-toast
 # or
-pnpm add react-native-flash-toast
+pnpm add @mehul214/react-native-flash-toast
 ```
 
 *(No `pod install` or native linking required!)*
@@ -52,7 +52,7 @@ Add `<FlashMessage />` at the root of your application (typically in `App.tsx` o
 ```tsx
 import React from 'react';
 import { View } from 'react-native';
-import { FlashMessage } from 'react-native-flash-toast';
+import { FlashMessage } from '@mehul214/react-native-flash-toast';
 
 export default function App() {
   return (
@@ -70,7 +70,7 @@ export default function App() {
 Call `showMessage` anywhere in your code — inside components, hooks, navigation listeners, Redux sagas, Zustand stores, or API error interceptors:
 
 ```tsx
-import { showMessage, hideMessage } from 'react-native-flash-toast';
+import { showMessage, hideMessage } from '@mehul214/react-native-flash-toast';
 
 // Simple success message
 showMessage({
@@ -106,7 +106,7 @@ showMessage({
 Prefer modern React hooks? Wrap your app with `<FlashMessageProvider>`:
 
 ```tsx
-import { FlashMessageProvider, useFlashMessage } from 'react-native-flash-toast';
+import { FlashMessageProvider, useFlashMessage } from '@mehul214/react-native-flash-toast';
 
 function Root() {
   return (
@@ -178,7 +178,7 @@ Migrating is 100% drop-in compatible! Simply change the import:
 
 ```diff
 - import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
-+ import FlashMessage, { showMessage, hideMessage } from "react-native-flash-toast";
++ import FlashMessage, { showMessage, hideMessage } from "@mehul214/react-native-flash-toast";
 ```
 
 Your existing `showMessage({ message, description, type, ... })` calls will work immediately, but with:
@@ -193,8 +193,7 @@ Your existing `showMessage({ message, description, type, ... })` calls will work
 Building and maintaining open-source libraries takes dedicated effort. If `react-native-flash-toast` helps you build great React Native applications or saves your team time, please consider supporting development:
 
 - ⭐️ **Star the repository on GitHub** (helps more developers discover it)
-- ☕️ **[Buy Me a Coffee](https://buymeacoffee.com/your-username)**
-- 💖 **[Sponsor on GitHub Sponsors](https://github.com/sponsors/your-username)**
+- 💖 **[Sponsor on GitHub Sponsors](https://github.com/sponsors/Mehul214)**
 
 ---
 
@@ -204,4 +203,5 @@ Contributions, feature requests, and bug reports are welcome! Please check the [
 
 ## 📄 License
 
-MIT © 2026. Free for personal and commercial use.
+MIT © 2026 Mehul. Free for personal and commercial use.
+

@@ -1,7 +1,10 @@
 {
-  "name": "react-native-flash-toast",
+  "name": "@mehul214/react-native-flash-toast",
   "version": "1.0.0",
   "description": "Next-generation, highly customizable flash message and toast banner for React Native & Expo. 100% Fabric / New Architecture ready with swipe-to-dismiss gestures.",
+  "publishConfig": {
+    "access": "public"
+  },
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -42,15 +45,15 @@
     "ios",
     "android"
   ],
-  "author": "Your Name <you@example.com>",
+  "author": "Mehul",
   "license": "MIT",
-  "homepage": "https://github.com/your-username/react-native-flash-toast#readme",
+  "homepage": "https://github.com/Mehul214/react-native-flash-toast#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/your-username/react-native-flash-toast.git"
+    "url": "https://github.com/Mehul214/react-native-flash-toast.git"
   },
   "bugs": {
-    "url": "https://github.com/your-username/react-native-flash-toast/issues"
+    "url": "https://github.com/Mehul214/react-native-flash-toast/issues"
   },
   "peerDependencies": {
     "react": ">=17.0.0",

@@ -68,3 +68,4 @@ export function hideMessage(): void {
  */
 export const flash = showMessage;
 export const dismissFlash = hideMessage;
+

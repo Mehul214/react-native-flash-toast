@@ -42,3 +42,4 @@ export function getDefaultSafeAreaInsets(): EdgeInsets {
     right: 0,
   };
 }
+

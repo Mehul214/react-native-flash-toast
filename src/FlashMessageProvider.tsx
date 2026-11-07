@@ -45,3 +45,4 @@ export function useFlashMessage(): FlashMessageContextValue {
   }
   return context;
 }
+

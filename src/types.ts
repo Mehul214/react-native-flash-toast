@@ -98,3 +98,4 @@ export interface FlashMessageContainerProps {
   /** Can message replace current one immediately or queue. Default: 'replace' */
   mode?: 'replace' | 'queue';
 }
+
