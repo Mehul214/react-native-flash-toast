@@ -15,6 +15,27 @@ A modern, drop-in replacement for the outdated `react-native-flash-message` pack
 
 ---
 
+## 📱 Preview
+
+<p align="center">
+  <table align="center">
+    <tr>
+      <th align="center"><b>iOS (Dynamic Island & Swipe)</b></th>
+      <th align="center"><b>Android (Edge-to-Edge)</b></th>
+    </tr>
+    <tr>
+      <td align="center">
+        <img src="assets/demo-ios.gif" width="300" alt="iOS Preview" />
+      </td>
+      <td align="center">
+        <img src="assets/demo-android.gif" width="300" alt="Android Preview" />
+      </td>
+    </tr>
+  </table>
+</p>
+
+---
+
 ## 🌟 Why react-native-flash-toast?
 
 | Feature | `react-native-flash-message` (Legacy) | `react-native-flash-toast` (This Package) |
