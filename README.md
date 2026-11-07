@@ -29,7 +29,13 @@ A modern, drop-in replacement for the outdated `react-native-flash-message` pack
         <img src="assets/demo-ios.gif" width="300" alt="iOS Preview" />
       </td>
       <td align="center">
-        <img src="assets/demo-android.gif" width="300" alt="Android Preview" />
+        <video src="assets/Android.webm" width="300" controls autoplay loop muted playsinline>
+          <a href="https://raw.githubusercontent.com/Mehul214/react-native-flash-toast/main/assets/Android.webm">
+            ▶ Watch Android Video Demo
+          </a>
+        </video>
+        <br />
+        <sub><a href="https://raw.githubusercontent.com/Mehul214/react-native-flash-toast/main/assets/Android.webm">▶ Click to Watch Android Video Demo</a></sub>
       </td>
     </tr>
   </table>
