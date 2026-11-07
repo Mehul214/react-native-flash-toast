@@ -1,6 +1,6 @@
 {
   "name": "@mehul214/react-native-flash-toast",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Next-generation, highly customizable flash message and toast banner for React Native & Expo. 100% Fabric / New Architecture ready with swipe-to-dismiss gestures.",
   "publishConfig": {
     "access": "public"
@@ -64,7 +64,7 @@
   "homepage": "https://github.com/Mehul214/react-native-flash-toast#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Mehul214/react-native-flash-toast.git"
+    "url": "git+https://github.com/Mehul214/react-native-flash-toast.git"
   },
   "bugs": {
     "url": "https://github.com/Mehul214/react-native-flash-toast/issues"

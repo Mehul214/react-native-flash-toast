@@ -36,6 +36,9 @@ export const FlashMessage = React.forwardRef<FlashMessageRef, FlashMessageContai
     const [currentMessage, setCurrentMessage] = useState<FlashMessageOptions | null>(null);
     const [isVisible, setIsVisible] = useState(false);
 
+    // Keep active message in a mutable ref so callbacks always access the latest values without re-creating functions
+    const currentMessageRef = useRef<FlashMessageOptions | null>(null);
+
     // Animation values
     const translateY = useRef(new Animated.Value(-150)).current;
     const opacity = useRef(new Animated.Value(0)).current;
@@ -48,10 +51,6 @@ export const FlashMessage = React.forwardRef<FlashMessageRef, FlashMessageContai
     const timerStartedAtRef = useRef<number>(0);
 
     const safeInsets = getDefaultSafeAreaInsets();
-
-    const position = currentMessage?.position ?? defaultPosition;
-    const isTop = position === 'top';
-    const isBottom = position === 'bottom';
 
     const clearTimers = useCallback(() => {
       if (hideTimeoutRef.current) {
@@ -68,7 +67,8 @@ export const FlashMessage = React.forwardRef<FlashMessageRef, FlashMessageContai
       (callback?: () => void) => {
         clearTimers();
 
-        const targetY = isTop ? -180 : isBottom ? 180 : 0;
+        const pos = currentMessageRef.current?.position ?? defaultPosition;
+        const targetY = pos === 'top' ? -180 : pos === 'bottom' ? 180 : 0;
 
         Animated.parallel([
           Animated.timing(translateY, {
@@ -83,14 +83,16 @@ export const FlashMessage = React.forwardRef<FlashMessageRef, FlashMessageContai
           }),
         ]).start(() => {
           setIsVisible(false);
-          if (currentMessage?.onHide) {
-            currentMessage.onHide();
-          }
+          const onHide = currentMessageRef.current?.onHide;
+          currentMessageRef.current = null;
           setCurrentMessage(null);
+          if (onHide) {
+            onHide();
+          }
           callback?.();
         });
       },
-      [clearTimers, isTop, isBottom, opacity, translateY, currentMessage]
+      [clearTimers, defaultPosition, opacity, translateY]
     );
 
     const startAutoHideTimer = useCallback(
@@ -106,7 +108,7 @@ export const FlashMessage = React.forwardRef<FlashMessageRef, FlashMessageContai
         progressAnimationRef.current = Animated.timing(progress, {
           toValue: 0,
           duration: durationMs,
-          useNativeDriver: false, // width needs layout or scaleX
+          useNativeDriver: false,
         });
         progressAnimationRef.current.start();
 
@@ -138,6 +140,7 @@ export const FlashMessage = React.forwardRef<FlashMessageRef, FlashMessageContai
     const show = useCallback(
       (options: FlashMessageOptions) => {
         clearTimers();
+        currentMessageRef.current = options;
         setCurrentMessage(options);
         setIsVisible(true);
 
@@ -167,7 +170,12 @@ export const FlashMessage = React.forwardRef<FlashMessageRef, FlashMessageContai
         });
 
         const shouldAutoHide = options.autoHide ?? true;
-        const dur = shouldAutoHide ? options.duration ?? defaultDuration : 0;
+        const dur = shouldAutoHide
+          ? options.duration !== undefined
+            ? options.duration
+            : defaultDuration
+          : 0;
+
         if (dur > 0) {
           startAutoHideTimer(dur);
         }
@@ -175,60 +183,68 @@ export const FlashMessage = React.forwardRef<FlashMessageRef, FlashMessageContai
       [clearTimers, defaultDuration, defaultPosition, opacity, progress, startAutoHideTimer, translateY]
     );
 
-    // Register with manager and imperative ref
+    // Mutable ref wrappers so external callers always invoke the latest logic
+    const showRef = useRef(show);
+    const animateHideRef = useRef(animateHide);
+    showRef.current = show;
+    animateHideRef.current = animateHide;
+
+    // Register with imperative ref
     useImperativeHandle(
       ref,
       () => ({
-        showMessage: show,
-        hideMessage: () => animateHide(),
+        showMessage: (options: FlashMessageOptions) => showRef.current(options),
+        hideMessage: () => animateHideRef.current(),
       }),
-      [show, animateHide]
+      []
     );
 
+    // Register with manager ON MOUNT only; only clean up on UNMOUNT
     useEffect(() => {
       const instanceRef: FlashMessageRef = {
-        showMessage: show,
-        hideMessage: () => animateHide(),
+        showMessage: (options: FlashMessageOptions) => showRef.current(options),
+        hideMessage: () => animateHideRef.current(),
       };
       flashManager.register(instanceRef);
       return () => {
         flashManager.unregister();
         clearTimers();
       };
-    }, [show, animateHide, clearTimers]);
+    }, [clearTimers]);
 
     // PanResponder for smooth swipe-to-dismiss gesture
     const panResponder = useRef(
       PanResponder.create({
-        onStartShouldSetPanResponder: () => true,
+        onStartShouldSetPanResponder: () => false,
         onMoveShouldSetPanResponder: (_, gestureState) => {
-          return Math.abs(gestureState.dy) > 5;
+          const swipeEnabled = currentMessageRef.current?.swipeToDismiss ?? true;
+          return swipeEnabled && Math.abs(gestureState.dy) > 8;
         },
         onPanResponderGrant: () => {
-          if (currentMessage?.pauseOnPress ?? true) {
+          if (currentMessageRef.current?.pauseOnPress ?? true) {
             pauseTimer();
           }
         },
         onPanResponderMove: (_, gestureState) => {
-          if (!(currentMessage?.swipeToDismiss ?? true)) return;
+          if (!(currentMessageRef.current?.swipeToDismiss ?? true)) return;
+          const pos = currentMessageRef.current?.position ?? defaultPosition;
 
-          // Only allow dragging upwards for top, downwards for bottom
-          if (isTop && gestureState.dy < 0) {
+          if (pos === 'top' && gestureState.dy < 0) {
             translateY.setValue(gestureState.dy);
-          } else if (isBottom && gestureState.dy > 0) {
+          } else if (pos === 'bottom' && gestureState.dy > 0) {
             translateY.setValue(gestureState.dy);
           }
         },
         onPanResponderRelease: (_, gestureState) => {
+          const pos = currentMessageRef.current?.position ?? defaultPosition;
           const swipeThreshold = 30;
           const isDismissGesture =
-            (isTop && gestureState.dy < -swipeThreshold) ||
-            (isBottom && gestureState.dy > swipeThreshold);
+            (pos === 'top' && gestureState.dy < -swipeThreshold) ||
+            (pos === 'bottom' && gestureState.dy > swipeThreshold);
 
-          if (isDismissGesture && (currentMessage?.swipeToDismiss ?? true)) {
+          if (isDismissGesture && (currentMessageRef.current?.swipeToDismiss ?? true)) {
             animateHide();
           } else {
-            // Spring back to center
             Animated.spring(translateY, {
               toValue: 0,
               tension: 80,
@@ -236,7 +252,7 @@ export const FlashMessage = React.forwardRef<FlashMessageRef, FlashMessageContai
               useNativeDriver: true,
             }).start();
 
-            if (currentMessage?.pauseOnPress ?? true) {
+            if (currentMessageRef.current?.pauseOnPress ?? true) {
               resumeTimer();
             }
           }
@@ -247,6 +263,10 @@ export const FlashMessage = React.forwardRef<FlashMessageRef, FlashMessageContai
     if (!isVisible || !currentMessage) {
       return null;
     }
+
+    const position = currentMessage.position ?? defaultPosition;
+    const isTop = position === 'top';
+    const isBottom = position === 'bottom';
 
     const type = currentMessage.type ?? 'default';
     const typeColors = COLORS[type];
@@ -274,19 +294,27 @@ export const FlashMessage = React.forwardRef<FlashMessageRef, FlashMessageContai
       if (typeof currentMessage.icon === 'function') {
         return (
           <View style={styles.iconContainer}>
-            {currentMessage.icon({ size: 22, color: textColor })}
+            <View style={styles.iconBadge}>
+              {currentMessage.icon({ size: 18, color: textColor })}
+            </View>
           </View>
         );
       }
 
       if (React.isValidElement(currentMessage.icon)) {
-        return <View style={styles.iconContainer}>{currentMessage.icon}</View>;
+        return (
+          <View style={styles.iconContainer}>
+            <View style={styles.iconBadge}>{currentMessage.icon}</View>
+          </View>
+        );
       }
 
       const iconType = typeof currentMessage.icon === 'string' ? currentMessage.icon : type;
       return (
         <View style={styles.iconContainer}>
-          <BuiltInIcon type={iconType as any} color={textColor} size={22} />
+          <View style={styles.iconBadge}>
+            <BuiltInIcon type={iconType as any} color={textColor} size={18} />
+          </View>
         </View>
       );
     };
@@ -328,6 +356,16 @@ export const FlashMessage = React.forwardRef<FlashMessageRef, FlashMessageContai
           ) : (
             <Pressable
               onPress={handlePress}
+              onPressIn={() => {
+                if (currentMessage.pauseOnPress ?? true) {
+                  pauseTimer();
+                }
+              }}
+              onPressOut={() => {
+                if (currentMessage.pauseOnPress ?? true) {
+                  resumeTimer();
+                }
+              }}
               onLongPress={currentMessage.onLongPress}
               style={styles.contentWrapper}
             >

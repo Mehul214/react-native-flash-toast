@@ -34,7 +34,7 @@ Module.prototype.require = function (id) {
   return originalRequire.apply(this, arguments);
 };
 
-const { FlashMessage, showMessage, hideMessage, flashManager, COLORS } = require('../dist/index.js');
+const { FlashMessage, showMessage, hideMessage, flashManager, COLORS, BuiltInIcon } = require('../dist/index.js');
 
 console.log('Testing exports...');
 assert(FlashMessage, 'FlashMessage should be defined');
@@ -42,6 +42,8 @@ assert(typeof showMessage === 'function', 'showMessage should be a function');
 assert(typeof hideMessage === 'function', 'hideMessage should be a function');
 assert(flashManager, 'flashManager should be defined');
 assert(COLORS.success.background === '#059669', 'COLORS.success should match');
+assert(COLORS.info.background === '#2563EB', 'COLORS.info should match');
+assert(typeof BuiltInIcon === 'function', 'BuiltInIcon should be exported');
 
 console.log('Testing manager buffer queue...');
 let called = false;
