@@ -7,6 +7,7 @@
 [![Fabric Ready](https://img.shields.io/badge/New%20Architecture-Fabric%20%26%20TurboModules-brightgreen.svg?style=flat-square)](https://reactnative.dev)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](CONTRIBUTING.md)
 [![Sponsor](https://img.shields.io/badge/Sponsor-GitHub%20Sponsors-pink.svg?style=flat-square)](https://github.com/sponsors/Mehul214)
+[![Donate UPI](https://img.shields.io/badge/Donate-UPI-orange.svg?style=flat-square)](#-support-via-upi)
 
 > Next-generation flash message, alert bar, and toast notification library for **React Native** and **Expo**. Built for the **New Architecture (Fabric)**, modern safe areas, dynamic islands, and interactive swipe-to-dismiss gestures.
 
@@ -194,6 +195,21 @@ Building and maintaining open-source libraries takes dedicated effort. If `react
 
 - ⭐️ **Star the repository on GitHub** (helps more developers discover it)
 - 💖 **[Sponsor on GitHub Sponsors](https://github.com/sponsors/Mehul214)**
+
+### ☕️ Support via UPI
+
+If you're in India or use any UPI-enabled payment app (Google Pay, PhonePe, Paytm, BHIM, Cred, Amazon Pay):
+
+- **UPI ID:** `mehulreshamwala7@okhdfcbank`
+- **Payee Name:** Mehul Reshamwala
+
+<p align="left">
+  <a href="upi://pay?pa=mehulreshamwala7@okhdfcbank&pn=Mehul%20Reshamwala&cu=INR&tn=Support%20react-native-flash-toast">
+    <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=upi%3A%2F%2Fpay%3Fpa%3Dmehulreshamwala7%40okhdfcbank%26pn%3DMehul%2520Reshamwala%26cu%3DINR%26tn%3DSupport%2520react-native-flash-toast" alt="Scan to Pay with UPI" width="180" height="180" />
+  </a>
+  <br />
+  <sub>Scan with Google Pay / PhonePe / Paytm or <a href="upi://pay?pa=mehulreshamwala7@okhdfcbank&pn=Mehul%20Reshamwala&cu=INR&tn=Support%20react-native-flash-toast">tap here on mobile to pay directly</a>.</sub>
+</p>
 
 ---
 

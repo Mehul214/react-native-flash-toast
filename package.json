@@ -45,6 +45,16 @@
     "ios",
     "android"
   ],
+  "funding": [
+    {
+      "type": "github",
+      "url": "https://github.com/sponsors/Mehul214"
+    },
+    {
+      "type": "individual",
+      "url": "https://github.com/Mehul214/react-native-flash-toast#-support-via-upi"
+    }
+  ],
   "author": "Mehul",
   "license": "MIT",
   "homepage": "https://github.com/Mehul214/react-native-flash-toast#readme",
