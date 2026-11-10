@@ -17,7 +17,14 @@ export {
 } from './FlashMessageProvider';
 
 export { BuiltInIcon } from './icons';
-export { COLORS, styles } from './styles';
+export {
+  COLORS,
+  styles,
+  setColorTheme,
+  setCustomColors,
+  resetColorThemes,
+  resolveTheme,
+} from './styles';
 
 export type {
   FlashMessageAction,
@@ -28,4 +35,7 @@ export type {
   FlashMessageRef,
   FlashMessageTransition,
   FlashMessageType,
+  BuiltInIconType,
+  ColorThemeEntry,
+  IconConfigObject,
 } from './types';

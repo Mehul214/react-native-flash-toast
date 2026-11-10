@@ -22,6 +22,10 @@ Module.prototype.require = function (id) {
         timing: () => ({ start: (cb) => cb && cb() }),
         spring: () => ({ start: (cb) => cb && cb() }),
         parallel: (anims) => ({ start: (cb) => cb && cb() }),
+        loop: (anim) => ({ start: (cb) => cb && cb(), stop: () => {} }),
+      },
+      Easing: {
+        linear: (t) => t,
       },
       PanResponder: {
         create: () => ({ panHandlers: {} }),
@@ -34,7 +38,18 @@ Module.prototype.require = function (id) {
   return originalRequire.apply(this, arguments);
 };
 
-const { FlashMessage, showMessage, hideMessage, flashManager, COLORS, BuiltInIcon } = require('../dist/index.js');
+const {
+  FlashMessage,
+  showMessage,
+  hideMessage,
+  flashManager,
+  COLORS,
+  BuiltInIcon,
+  setColorTheme,
+  setCustomColors,
+  resolveTheme,
+  resetColorThemes,
+} = require('../dist/index.js');
 
 console.log('Testing exports...');
 assert(FlashMessage, 'FlashMessage should be defined');
@@ -45,14 +60,44 @@ assert(COLORS.success.background === '#059669', 'COLORS.success should match');
 assert(COLORS.info.background === '#2563EB', 'COLORS.info should match');
 assert(typeof BuiltInIcon === 'function', 'BuiltInIcon should be exported');
 
+console.log('Testing custom themes & color registry...');
+setColorTheme('purple', {
+  background: '#7C3AED',
+  text: '#FFFFFF',
+  icon: '#DDD6FE',
+});
+const purpleTheme = resolveTheme('purple');
+assert.strictEqual(purpleTheme.background, '#7C3AED', 'Custom purple theme background should match');
+assert.strictEqual(purpleTheme.icon, '#DDD6FE', 'Custom purple theme icon color should match');
+
+resetColorThemes();
+const fallbackTheme = resolveTheme('purple');
+assert.strictEqual(fallbackTheme.background, COLORS.default.background, 'Should fallback to default after reset');
+
 console.log('Testing manager buffer queue...');
 let called = false;
-showMessage({ message: 'Early message before mount', type: 'info' });
+showMessage({
+  message: 'Custom styled toast',
+  description: 'With custom colors and icon',
+  backgroundColor: '#4F46E5',
+  color: '#EEF2FF',
+  descriptionColor: '#C7D2FE',
+  iconColor: '#FBBF24',
+  iconBadgeColor: 'rgba(251, 191, 36, 0.2)',
+  icon: 'star',
+  iconPosition: 'right',
+  borderColor: '#818CF8',
+  borderWidth: 2,
+  borderRadius: 24,
+});
 
 flashManager.register({
   showMessage: (opts) => {
     called = true;
-    assert.strictEqual(opts.message, 'Early message before mount');
+    assert.strictEqual(opts.message, 'Custom styled toast');
+    assert.strictEqual(opts.backgroundColor, '#4F46E5');
+    assert.strictEqual(opts.icon, 'star');
+    assert.strictEqual(opts.iconPosition, 'right');
   },
   hideMessage: () => {},
 });

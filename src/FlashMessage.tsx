@@ -11,14 +11,16 @@ import {
   Pressable,
   Text,
   View,
+  ViewStyle,
 } from 'react-native';
 import { flashManager } from './FlashMessageManager';
 import { BuiltInIcon } from './icons';
-import { COLORS, styles } from './styles';
+import { resolveTheme, styles } from './styles';
 import type {
   FlashMessageContainerProps,
   FlashMessageOptions,
   FlashMessageRef,
+  IconConfigObject,
 } from './types';
 import { getDefaultSafeAreaInsets } from './utils/safeArea';
 
@@ -31,12 +33,16 @@ export const FlashMessage = React.forwardRef<FlashMessageRef, FlashMessageContai
       statusBarOffset,
       bottomOffset,
       style: containerCustomStyle,
+      titleStyle: defaultTitleStyle,
+      textStyle: defaultTextStyle,
+      iconPosition: defaultIconPosition = 'left',
+      theme: localTheme,
     } = props;
 
     const [currentMessage, setCurrentMessage] = useState<FlashMessageOptions | null>(null);
     const [isVisible, setIsVisible] = useState(false);
 
-    // Keep active message in a mutable ref so callbacks always access the latest values without re-creating functions
+    // Keep active message in a mutable ref so callbacks always access latest values
     const currentMessageRef = useRef<FlashMessageOptions | null>(null);
 
     // Animation values
@@ -183,7 +189,7 @@ export const FlashMessage = React.forwardRef<FlashMessageRef, FlashMessageContai
       [clearTimers, defaultDuration, defaultPosition, opacity, progress, startAutoHideTimer, translateY]
     );
 
-    // Mutable ref wrappers so external callers always invoke the latest logic
+    // Mutable ref wrappers so external callers always invoke latest functions
     const showRef = useRef(show);
     const animateHideRef = useRef(animateHide);
     showRef.current = show;
@@ -199,7 +205,7 @@ export const FlashMessage = React.forwardRef<FlashMessageRef, FlashMessageContai
       []
     );
 
-    // Register with manager ON MOUNT only; only clean up on UNMOUNT
+    // Register with manager ON MOUNT only
     useEffect(() => {
       const instanceRef: FlashMessageRef = {
         showMessage: (options: FlashMessageOptions) => showRef.current(options),
@@ -269,9 +275,23 @@ export const FlashMessage = React.forwardRef<FlashMessageRef, FlashMessageContai
     const isBottom = position === 'bottom';
 
     const type = currentMessage.type ?? 'default';
-    const typeColors = COLORS[type];
-    const backgroundColor = currentMessage.backgroundColor ?? typeColors.background;
-    const textColor = currentMessage.color ?? typeColors.text;
+    const resolvedTheme = resolveTheme(type, localTheme);
+
+    const backgroundColor = currentMessage.backgroundColor ?? resolvedTheme.background;
+    const textColor = currentMessage.color ?? (resolvedTheme.text || '#FFFFFF');
+    const descriptionColor =
+      currentMessage.descriptionColor ??
+      resolvedTheme.description ??
+      'rgba(255, 255, 255, 0.9)';
+    const defaultIconColor = resolvedTheme.icon || textColor;
+    const defaultBadgeBg = resolvedTheme.iconBadge || 'rgba(255, 255, 255, 0.22)';
+    const progressBarColor =
+      currentMessage.progressBarColor ?? resolvedTheme.progressBar ?? 'rgba(255, 255, 255, 0.9)';
+    const progressBarTrackColor =
+      currentMessage.progressBarBackgroundColor ??
+      resolvedTheme.progressBarBackground ??
+      'rgba(255, 255, 255, 0.2)';
+
     const floating = currentMessage.floating ?? defaultFloating;
 
     const topInset =
@@ -288,33 +308,165 @@ export const FlashMessage = React.forwardRef<FlashMessageRef, FlashMessageContai
       ? [styles.rootBottom, { paddingBottom: bottomInset }]
       : styles.rootCenter;
 
-    const renderIcon = () => {
+    // Card customizations (borders, radius)
+    const customCardStyle: ViewStyle = {};
+    if (currentMessage.borderColor) {
+      customCardStyle.borderColor = currentMessage.borderColor;
+    }
+    if (currentMessage.borderWidth !== undefined) {
+      customCardStyle.borderWidth = currentMessage.borderWidth;
+    }
+    if (currentMessage.borderRadius !== undefined) {
+      customCardStyle.borderRadius = currentMessage.borderRadius;
+    }
+
+    // Determine icon placement
+    const isConfigObject =
+      typeof currentMessage.icon === 'object' &&
+      currentMessage.icon !== null &&
+      !React.isValidElement(currentMessage.icon) &&
+      ('name' in currentMessage.icon ||
+        'component' in currentMessage.icon ||
+        'color' in currentMessage.icon ||
+        'size' in currentMessage.icon);
+
+    const configObj = isConfigObject ? (currentMessage.icon as IconConfigObject) : null;
+
+    const iconPlacement =
+      configObj?.position ??
+      currentMessage.iconPosition ??
+      defaultIconPosition ??
+      'left';
+
+    const renderIconContent = () => {
       if (currentMessage.icon === 'none') return null;
 
-      if (typeof currentMessage.icon === 'function') {
+      // 1. Config Object
+      if (configObj) {
+        const finalColor = configObj.color ?? currentMessage.iconColor ?? defaultIconColor;
+        const finalSize = configObj.size ?? currentMessage.iconSize ?? 18;
+        const showBadge =
+          configObj.badge !== undefined
+            ? configObj.badge
+            : currentMessage.iconBadge !== undefined
+            ? currentMessage.iconBadge
+            : true;
+        const badgeBg = configObj.badgeColor ?? currentMessage.iconBadgeColor ?? defaultBadgeBg;
+
+        let iconNode: React.ReactNode = null;
+        if (typeof configObj.component === 'function') {
+          iconNode = configObj.component({ size: finalSize, color: finalColor });
+        } else if (React.isValidElement(configObj.component)) {
+          iconNode = configObj.component;
+        } else {
+          const iconType = configObj.name || type;
+          iconNode = <BuiltInIcon type={iconType} color={finalColor} size={finalSize} />;
+        }
+
+        const badgeDimension = finalSize + 14;
+        const badgeViewStyle: ViewStyle = {
+          width: badgeDimension,
+          height: badgeDimension,
+          borderRadius: badgeDimension / 2,
+          backgroundColor: badgeBg,
+        };
+
         return (
-          <View style={styles.iconContainer}>
-            <View style={styles.iconBadge}>
-              {currentMessage.icon({ size: 18, color: textColor })}
-            </View>
+          <View
+            style={[
+              iconPlacement === 'right' ? styles.iconContainerRight : styles.iconContainerLeft,
+              configObj.style,
+              currentMessage.iconStyle,
+            ]}
+          >
+            {showBadge ? (
+              <View
+                style={[
+                  styles.iconBadge,
+                  badgeViewStyle,
+                  configObj.badgeStyle,
+                  currentMessage.iconBadgeStyle,
+                ]}
+              >
+                {iconNode}
+              </View>
+            ) : (
+              iconNode
+            )}
           </View>
         );
       }
 
+      // 2. Custom Render Function
+      const finalColor = currentMessage.iconColor ?? defaultIconColor;
+      const finalSize = currentMessage.iconSize ?? 18;
+      const showBadge = currentMessage.iconBadge !== undefined ? currentMessage.iconBadge : true;
+      const badgeBg = currentMessage.iconBadgeColor ?? defaultBadgeBg;
+
+      const badgeDimension = finalSize + 14;
+      const badgeViewStyle: ViewStyle = {
+        width: badgeDimension,
+        height: badgeDimension,
+        borderRadius: badgeDimension / 2,
+        backgroundColor: badgeBg,
+      };
+
+      if (typeof currentMessage.icon === 'function') {
+        const iconNode = currentMessage.icon({ size: finalSize, color: finalColor });
+        return (
+          <View
+            style={[
+              iconPlacement === 'right' ? styles.iconContainerRight : styles.iconContainerLeft,
+              currentMessage.iconStyle,
+            ]}
+          >
+            {showBadge ? (
+              <View style={[styles.iconBadge, badgeViewStyle, currentMessage.iconBadgeStyle]}>
+                {iconNode}
+              </View>
+            ) : (
+              iconNode
+            )}
+          </View>
+        );
+      }
+
+      // 3. React Element
       if (React.isValidElement(currentMessage.icon)) {
         return (
-          <View style={styles.iconContainer}>
-            <View style={styles.iconBadge}>{currentMessage.icon}</View>
+          <View
+            style={[
+              iconPlacement === 'right' ? styles.iconContainerRight : styles.iconContainerLeft,
+              currentMessage.iconStyle,
+            ]}
+          >
+            {showBadge ? (
+              <View style={[styles.iconBadge, badgeViewStyle, currentMessage.iconBadgeStyle]}>
+                {currentMessage.icon}
+              </View>
+            ) : (
+              currentMessage.icon
+            )}
           </View>
         );
       }
 
+      // 4. Preset String or Default
       const iconType = typeof currentMessage.icon === 'string' ? currentMessage.icon : type;
       return (
-        <View style={styles.iconContainer}>
-          <View style={styles.iconBadge}>
-            <BuiltInIcon type={iconType as any} color={textColor} size={18} />
-          </View>
+        <View
+          style={[
+            iconPlacement === 'right' ? styles.iconContainerRight : styles.iconContainerLeft,
+            currentMessage.iconStyle,
+          ]}
+        >
+          {showBadge ? (
+            <View style={[styles.iconBadge, badgeViewStyle, currentMessage.iconBadgeStyle]}>
+              <BuiltInIcon type={iconType} color={finalColor} size={finalSize} />
+            </View>
+          ) : (
+            <BuiltInIcon type={iconType} color={finalColor} size={finalSize} />
+          )}
         </View>
       );
     };
@@ -344,6 +496,7 @@ export const FlashMessage = React.forwardRef<FlashMessageRef, FlashMessageContai
             styles.toastContainer,
             floating ? styles.floatingContainer : styles.edgeToEdgeContainer,
             { backgroundColor },
+            customCardStyle,
             currentMessage.style,
             {
               transform: [{ translateY }],
@@ -369,12 +522,17 @@ export const FlashMessage = React.forwardRef<FlashMessageRef, FlashMessageContai
               onLongPress={currentMessage.onLongPress}
               style={styles.contentWrapper}
             >
-              {renderIcon()}
+              {iconPlacement === 'left' && renderIconContent()}
 
               <View style={styles.textContainer}>
                 {typeof currentMessage.message === 'string' ? (
                   <Text
-                    style={[styles.titleText, { color: textColor }, currentMessage.titleStyle]}
+                    style={[
+                      styles.titleText,
+                      { color: textColor },
+                      defaultTitleStyle,
+                      currentMessage.titleStyle,
+                    ]}
                     numberOfLines={2}
                   >
                     {currentMessage.message}
@@ -388,7 +546,8 @@ export const FlashMessage = React.forwardRef<FlashMessageRef, FlashMessageContai
                     <Text
                       style={[
                         styles.descriptionText,
-                        { color: textColor },
+                        { color: descriptionColor },
+                        defaultTextStyle,
                         currentMessage.textStyle,
                       ]}
                       numberOfLines={3}
@@ -400,6 +559,8 @@ export const FlashMessage = React.forwardRef<FlashMessageRef, FlashMessageContai
                   )
                 ) : null}
               </View>
+
+              {iconPlacement === 'right' && renderIconContent()}
 
               {currentMessage.action ? (
                 <Pressable
@@ -418,11 +579,14 @@ export const FlashMessage = React.forwardRef<FlashMessageRef, FlashMessageContai
           )}
 
           {currentMessage.showProgressBar && (
-            <View style={styles.progressBarContainer}>
+            <View style={[styles.progressBarContainer, { backgroundColor: progressBarTrackColor }]}>
               <Animated.View
                 style={[
                   styles.progressBarFill,
-                  { width: progressWidthInterpolation },
+                  {
+                    backgroundColor: progressBarColor,
+                    width: progressWidthInterpolation,
+                  },
                 ]}
               />
             </View>

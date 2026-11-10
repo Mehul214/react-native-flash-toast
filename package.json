@@ -1,6 +1,6 @@
 {
   "name": "@mehul214/react-native-flash-toast",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Next-generation, highly customizable flash message and toast banner for React Native & Expo. 100% Fabric / New Architecture ready with swipe-to-dismiss gestures.",
   "publishConfig": {
     "access": "public"

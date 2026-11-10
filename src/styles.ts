@@ -1,33 +1,108 @@
 import { StyleSheet, Platform } from 'react-native';
-import type { FlashMessageType } from './types';
+import type { ColorThemeEntry, FlashMessageType } from './types';
 
-export const COLORS: Record<FlashMessageType, { background: string; text: string; icon: string }> = {
+export const COLORS: Record<string, ColorThemeEntry> = {
   default: {
     background: '#1F2937', // Slate 800
     text: '#FFFFFF',
     icon: '#9CA3AF',
+    iconBadge: 'rgba(255, 255, 255, 0.16)',
+    description: 'rgba(255, 255, 255, 0.88)',
+    progressBar: '#FFFFFF',
+    progressBarBackground: 'rgba(255, 255, 255, 0.2)',
   },
   success: {
     background: '#059669', // Emerald 600
     text: '#FFFFFF',
-    icon: '#D1FAE5',
+    icon: '#FFFFFF',
+    iconBadge: 'rgba(255, 255, 255, 0.22)',
+    description: 'rgba(255, 255, 255, 0.92)',
+    progressBar: '#FFFFFF',
+    progressBarBackground: 'rgba(255, 255, 255, 0.2)',
   },
   danger: {
     background: '#DC2626', // Red 600
     text: '#FFFFFF',
-    icon: '#FEE2E2',
+    icon: '#FFFFFF',
+    iconBadge: 'rgba(255, 255, 255, 0.22)',
+    description: 'rgba(255, 255, 255, 0.92)',
+    progressBar: '#FFFFFF',
+    progressBarBackground: 'rgba(255, 255, 255, 0.2)',
+  },
+  error: {
+    background: '#DC2626', // Red 600 alias
+    text: '#FFFFFF',
+    icon: '#FFFFFF',
+    iconBadge: 'rgba(255, 255, 255, 0.22)',
+    description: 'rgba(255, 255, 255, 0.92)',
+    progressBar: '#FFFFFF',
+    progressBarBackground: 'rgba(255, 255, 255, 0.2)',
   },
   warning: {
     background: '#D97706', // Amber 600
     text: '#FFFFFF',
-    icon: '#FEF3C7',
+    icon: '#FFFFFF',
+    iconBadge: 'rgba(255, 255, 255, 0.22)',
+    description: 'rgba(255, 255, 255, 0.92)',
+    progressBar: '#FFFFFF',
+    progressBarBackground: 'rgba(255, 255, 255, 0.2)',
   },
   info: {
     background: '#2563EB', // Blue 600
     text: '#FFFFFF',
-    icon: '#DBEAFE',
+    icon: '#FFFFFF',
+    iconBadge: 'rgba(255, 255, 255, 0.22)',
+    description: 'rgba(255, 255, 255, 0.92)',
+    progressBar: '#FFFFFF',
+    progressBarBackground: 'rgba(255, 255, 255, 0.2)',
   },
 };
+
+// Global theme store for custom user-registered themes
+const customThemes: Record<string, ColorThemeEntry> = {};
+
+/**
+ * Register or override a custom color theme globally.
+ * E.g. setColorTheme('purple', { background: '#7C3AED', text: '#FFFFFF', icon: '#DDD6FE' })
+ */
+export function setColorTheme(name: string, theme: ColorThemeEntry): void {
+  customThemes[name] = theme;
+}
+
+/**
+ * Bulk register multiple custom color themes globally.
+ */
+export function setCustomColors(themes: Record<string, ColorThemeEntry>): void {
+  Object.assign(customThemes, themes);
+}
+
+/**
+ * Reset custom themes back to default presets.
+ */
+export function resetColorThemes(): void {
+  for (const key of Object.keys(customThemes)) {
+    delete customThemes[key];
+  }
+}
+
+/**
+ * Safely resolves the active color theme with fallback support.
+ */
+export function resolveTheme(
+  type: FlashMessageType = 'default',
+  localTheme?: Record<string, ColorThemeEntry>
+): ColorThemeEntry {
+  if (localTheme && localTheme[type]) {
+    return localTheme[type];
+  }
+  if (customThemes[type]) {
+    return customThemes[type];
+  }
+  if (COLORS[type]) {
+    return COLORS[type];
+  }
+  return COLORS.default;
+}
 
 export const styles = StyleSheet.create({
   rootOverlay: {
@@ -85,8 +160,13 @@ export const styles = StyleSheet.create({
     paddingVertical: 13,
     paddingHorizontal: 16,
   },
-  iconContainer: {
+  iconContainerLeft: {
     marginRight: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  iconContainerRight: {
+    marginLeft: 12,
     justifyContent: 'center',
     alignItems: 'center',
   },

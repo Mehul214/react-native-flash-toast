@@ -170,11 +170,104 @@ function ProfileScreen() {
 
 | Type | Default Background | Default Icon | Intended Use |
 | :--- | :--- | :--- | :--- |
-| `success` | `#059669` (Emerald) | ✓ Checkmark | Confirmed actions, saved states |
-| `danger` | `#DC2626` (Red) | ✕ Close | Errors, network failures |
-| `warning` | `#D97706` (Amber) | ! Warning | Disconnections, low storage |
-| `info` | `#2563EB` (Blue) | ℹ Info | Informational alerts, updates |
-| `default` | `#1F2937` (Dark Slate) | ● Bullet | Neutral toasts & notifications |
+| `success` | `#059669` (Emerald) | Checkmark | Confirmed actions, saved states |
+| `danger` / `error` | `#DC2626` (Red) | Cross (X) | Errors, network failures |
+| `warning` | `#D97706` (Amber) | Exclamation (!) | Disconnections, low storage |
+| `info` | `#2563EB` (Blue) | Info (i) | Informational alerts, updates |
+| `default` | `#1F2937` (Dark Slate) | Bullet | Neutral toasts & notifications |
+
+---
+
+## 🌈 Full Color & Icon Customization (v1.1.0)
+
+Every flash message can be fully customized with bespoke colors, borders, badges, and icons:
+
+### 1. Custom Colors & Borders per Toast
+
+```tsx
+showMessage({
+  message: 'Payment Received!',
+  description: 'Your invoice #4829 has been settled.',
+  backgroundColor: '#4F46E5', // Custom Indigo card background
+  color: '#EEF2FF',           // Title color
+  descriptionColor: '#C7D2FE',// Subtitle color
+  icon: 'star',               // Built-in star icon
+  iconColor: '#FBBF24',       // Golden icon
+  iconBadgeColor: 'rgba(251, 191, 36, 0.25)', // Custom badge glow
+  borderRadius: 20,           // Custom pill curvature
+  borderColor: '#818CF8',     // Outline border
+  borderWidth: 1.5,
+  showProgressBar: true,
+  progressBarColor: '#A5B4FC',// Custom progress bar fill
+  progressBarBackgroundColor: 'rgba(255, 255, 255, 0.15)',
+});
+```
+
+### 2. Built-in Vector Icon Presets
+
+Zero external vector libraries needed! All icons render pixel-perfect on iOS, Android, and Web:
+
+* `'success'` / `'check'` — Crisp geometric checkmark
+* `'danger'` / `'error'` — Bold X cross
+* `'warning'` — Exclamation mark
+* `'info'` — Clean modern info mark (no double-circle)
+* `'bell'` — Notification bell
+* `'star'` — 4-point sparkle star
+* `'heart'` — Geometric heart
+* `'lock'` — Security padlock
+* `'loading'` — Smooth animated spinning indicator
+* `'default'` — Centered bullet dot
+
+```tsx
+// Animated loading toast
+showMessage({
+  message: 'Uploading photos...',
+  description: 'Please wait while we sync your files.',
+  icon: 'loading', // Animated spinning indicator
+  autoHide: false,
+});
+```
+
+### 3. Advanced Icon Configuration Object
+
+Customize the icon size, badge background, position, or render your own icon library (e.g. Lucide, Ionicons, FontAwesome):
+
+```tsx
+showMessage({
+  message: 'New Notification',
+  icon: {
+    name: 'bell',
+    color: '#F59E0B',
+    size: 20,
+    badge: true,                    // Circular badge background (set false for flat icon)
+    badgeColor: 'rgba(245, 158, 11, 0.2)',
+    position: 'right',              // Place icon on 'left' or 'right' of text
+  },
+});
+```
+
+### 4. Global Custom Themes
+
+Register custom brand themes once and use them across your entire app:
+
+```tsx
+import { setColorTheme } from '@mehul214/react-native-flash-toast';
+
+// Register your brand theme
+setColorTheme('brand', {
+  background: '#7C3AED',
+  text: '#FFFFFF',
+  icon: '#DDD6FE',
+  iconBadge: 'rgba(255, 255, 255, 0.2)',
+  description: '#EDE9FE',
+});
+
+// Trigger anywhere with type: 'brand'
+showMessage({
+  message: 'Welcome to Pro!',
+  type: 'brand',
+});
+```
 
 ---
 
@@ -184,18 +277,29 @@ function ProfileScreen() {
 | :--- | :--- | :--- | :--- |
 | `message` | `string \| ReactNode` | **Required** | The main title or text content |
 | `description` | `string \| ReactNode` | `undefined` | Secondary subtitle or detailed message |
-| `type` | `'default' \| 'success' \| 'danger' \| 'warning' \| 'info'` | `'default'` | Semantic color preset |
+| `type` | `'default' \| 'success' \| 'danger' \| 'warning' \| 'info' \| string` | `'default'` | Semantic color preset or registered custom theme |
 | `position` | `'top' \| 'bottom' \| 'center'` | `'top'` | Screen anchor position |
 | `duration` | `number` | `3000` | Auto-dismiss duration in ms (0 to disable) |
 | `autoHide` | `boolean` | `true` | Automatically dismiss after duration |
 | `floating` | `boolean` | `true` | Modern rounded floating card vs edge-to-edge |
-| `swipeToDismiss` | `boolean` | `true` | Swipe up (or down) gesture to dismiss |
+| `swipeToDismiss` | `boolean` | `true` | Swipe gesture to dismiss |
 | `pauseOnPress` | `boolean` | `true` | Pauses countdown timer while finger holds card |
 | `showProgressBar`| `boolean` | `false` | Displays visual countdown progress indicator |
 | `action` | `{ label, onPress, style?, textStyle? }` | `undefined` | Action button (e.g. Undo, Retry) |
-| `icon` | `FlashMessageType \| 'none' \| ReactNode \| Function` | Semantic type | Custom or preset icon |
-| `backgroundColor`| `string` | Preset background | Override card color |
-| `color` | `string` | Preset text color | Override text & icon color |
+| **`icon`** | `BuiltInIconType \| ReactNode \| Function \| IconConfigObject` | Semantic type | Built-in preset name, JSX, render func, or config object |
+| **`iconColor`** | `string` | Text color | Independent icon color |
+| **`iconSize`** | `number` | `18` | Size of icon in pixels |
+| **`iconBadge`** | `boolean` | `true` | Toggle circular backdrop badge behind icon |
+| **`iconBadgeColor`** | `string` | Translucent white | Custom background color of the icon badge |
+| **`iconPosition`** | `'left' \| 'right'` | `'left'` | Display icon on the left or right of text |
+| **`backgroundColor`**| `string` | Preset background | Override card background color |
+| **`color`** | `string` | Preset text color | Override title text color |
+| **`descriptionColor`**| `string` | `rgba(255,255,255,0.9)` | Override subtitle text color |
+| **`borderColor`** | `string` | `undefined` | Custom card outline border color |
+| **`borderWidth`** | `number` | `undefined` | Custom card outline border width |
+| **`borderRadius`**| `number` | `16` (floating) | Custom card corner curvature |
+| **`progressBarColor`**| `string` | White | Custom color of progress bar fill |
+| **`progressBarBackgroundColor`**| `string` | Translucent | Custom track background of progress bar |
 | `onPress` | `() => void` | `undefined` | Callback on banner tap |
 | `onShow` | `() => void` | `undefined` | Callback when message enters view |
 | `onHide` | `() => void` | `undefined` | Callback after message finishes exit |
